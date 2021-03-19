@@ -48,7 +48,9 @@ class AdminController extends Controller
             ->limit($pagination->limit)
             ->where(['activity_status' => 1])
             ->all();
+
         $products = CatalogeController::convertCurrency($products);
+
         return $this->render('index', [
             'products' => $products,
             'pagination' => $pagination,
@@ -215,6 +217,25 @@ class AdminController extends Controller
         $model = $this->findModel($id);
         $model->updateAttributes(['activity_status' => '1']);
         return $this->redirect(['view', 'id' => $model->product_id]);
+    }
+
+    /**
+     * Возвращает ответ в формате JSON
+     *
+     * @author Просветов Владислав
+     * @version 1.0, 19.03.2021
+     *
+     * @return Response
+     */
+    public function actionGetJson() {
+        $query = Products::find();
+        $products = $query->orderBy('product_id ASC')
+            ->where(['activity_status' => 1])
+            ->all();
+
+        $products = CatalogeController::convertCurrency($products);
+
+        return $this->asJson($products);
     }
 
     /**
