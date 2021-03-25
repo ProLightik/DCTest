@@ -8,6 +8,7 @@ use yii\widgets\LinkPager;
 <div style="margin: 10px 10px 10px 0;">
     <?= Html::a('Создать товар', ['create'], ['class' => 'btn btn-success']) ?>
     <?= Html::a('Черновики', ['drafts'], ['class' => 'btn btn-info']) ?>
+    <?= Html::a('Создать промокод', ['create-promocode'], ['class' => 'btn btn-warning']) ?>
 </div>
     <table>
         <tr>

@@ -4,13 +4,16 @@ namespace app\controllers;
 
 use app\models\CreateForm;
 use app\models\Products;
+use app\models\Promocodes;
 use Yii;
 use yii\data\Pagination;
+use yii\db\BaseActiveRecord;
 use yii\web\Controller;
 use app\models\EntryForm;
 use yii\helpers\Inflector;
 use yii\web\Response;
 use yii\web\NotFoundHttpException;
+use app\models\PromocodeDiscount;
 
 /**
  * Класс для функционала Администратора
@@ -31,7 +34,6 @@ class AdminController extends Controller
      */
     public function actionIndex(): string
     {
-        $model = new EntryForm();
         $query = Products::find();
 
         $count = $query
@@ -54,7 +56,6 @@ class AdminController extends Controller
         return $this->render('index', [
             'products' => $products,
             'pagination' => $pagination,
-            'model' => $model,
         ]);
     }
 
@@ -227,7 +228,8 @@ class AdminController extends Controller
      *
      * @return Response
      */
-    public function actionGetJson() {
+    public function actionGetJson()
+    {
         $query = Products::find();
         $products = $query->orderBy('product_id ASC')
             ->where(['activity_status' => 1])
@@ -239,6 +241,45 @@ class AdminController extends Controller
     }
 
     /**
+     * Действие создания промокода
+     *
+     * @author Просветов Владислав
+     * @version 1.0, 23.03.2021
+     */
+    public function actionCreatePromocode()
+    {
+        $model = new Promocodes();
+        $query = Products::find();
+        $message = '';
+
+        $products = $query
+            ->select(['product_id', 'product_name'])
+            ->orderBy('product_id ASC')
+            ->where(['activity_status' => 1])
+            ->asArray()
+            ->all();
+
+        if ($model->load(Yii::$app->request->post())) {
+            if ($model->discount < 0) {
+                $message = 'Скидка не может быть отрицательной';
+            } else if ($model->type_discount == PromocodeDiscount::TYPE_DISCOUNT_PERCENT && $model->discount > 100) {
+                $message = 'Скидка не может составлять более 100%';
+            } else {
+                $model->product_id = json_encode($model->product_id);
+                if ($model->save()) {
+                    $message = 'Промокод успешно создан';
+                }
+            }
+        }
+
+        return $this->render('createPromocode', [
+            'model' => $model,
+            'products' => $products,
+            'message' => $message,
+        ]);
+    }
+
+    /**
      * Ищет товар по идентификатору
      *
      * @author Просветов Владислав
@@ -246,9 +287,9 @@ class AdminController extends Controller
      *
      * @param int $id Идентификатор товара
      * @throws NotFoundHttpException
-     * @return string
+     * @return BaseActiveRecord
      */
-    public function findModel(int $id): string
+    public function findModel(int $id): BaseActiveRecord
     {
         if (($model = Products::findOne($id)) !== null) {
             return $model;

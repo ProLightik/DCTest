@@ -5,11 +5,12 @@ namespace app\models;
 use yii\db\ActiveRecord;
 
 /**
- * Класс для работы с таблице товаров
+ * Класс для работы с таблицей товаров
  * @package app\models
  */
 class Products extends ActiveRecord
 {
+
     /**
      * Правила валидации полей формы при создании и редактировании товара
      */

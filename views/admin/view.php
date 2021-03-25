@@ -24,18 +24,11 @@ $this->title = 'Просмотр товара: '  . $model->product_name ;
 <h1><?= Html::encode($this->title); ?></h1>
 <p>
     <?= Html::a('Изменить', ['update', 'id' => $model->product_id], ['class' => 'btn btn-primary']); ?>
-    <?=
-    Html::a(
-        'Удалить',
-        ['delete', 'id' => $model->product_id],
-        [
-            'class' => 'btn btn-danger',
-            'data' => [
-                'method' => 'post',
-            ],
-        ]
-    );
-    ?>
+    <?= Html::a(
+            'Удалить',
+            ['delete', 'id' => $model->product_id],
+            ['class' => 'btn btn-danger', 'data' => ['method' => 'post']]
+        );?>
 </p>
 
 <?=

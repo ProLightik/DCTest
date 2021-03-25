@@ -11,7 +11,7 @@ use yii\bootstrap\Alert;
 $this->title = 'Редактирование товара: ' . $model->product_name;
 ?>
 
-    <h1><?= Html::encode($this->title); ?></h1>
+<h1><?= Html::encode($this->title); ?></h1>
 <?php if ($errorMsg): ?>
     <?php echo Alert::widget([
         'options' => [
